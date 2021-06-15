@@ -1,26 +1,51 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useState, useRef, ReactElement} from 'react';
+import JoditEditor from "jodit-react";
+import {Button, Container, Typography} from '@material-ui/core';
+import Box from "@material-ui/core/Box";
+import ReactHtmlParser from 'react-html-parser';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const editor = useRef(null)
+	const [content, setContent] = useState('');
+	const [showRendered, setShowRendered] = useState<boolean>(false);
+
+	const handleSaveBtn = () => {
+		setShowRendered(true);
+	}
+	
+	return (
+		<React.Fragment>
+			<Box mt={4}>
+				<Container maxWidth="md">
+					<JoditEditor
+						ref={editor}
+						value={content}
+						onBlur={newContent => setContent(newContent)}
+					/>
+					<Box display="flex" mt={2}>
+						<Button
+							color="primary"
+							variant="contained"
+							size="large"
+							onClick={handleSaveBtn}
+						>
+							Sauvegarder
+						</Button>
+					</Box>
+					{
+						showRendered &&	 (
+							<Box mt={3}>
+								<Typography variant="h5">
+									Rendu
+								</Typography>
+								{ReactHtmlParser(content)}
+							</Box>
+						)
+					}
+				</Container>
+			</Box>
+		</React.Fragment>
+      );
 }
 
 export default App;
